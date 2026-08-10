@@ -1,0 +1,24 @@
+<div class="language-selector">
+  <h3>Languages</h3>
+
+  <div class="language-list">
+    <label *ngFor="let option of options" class="language-item">
+      <input type="checkbox" [checked]="option.selected" (change)="toggle(option)" />
+      <span>{{ option.name }}</span>
+      <button type="button" class="remove-btn" (click)="remove(option)">✕</button>
+    </label>
+  </div>
+
+  <div class="add-language">
+    <input
+      type="text"
+      placeholder="Add a language"
+      [(ngModel)]="newLanguage"
+      (keyup.enter)="addLanguage()" />
+    <app-button label="Add" type="button" (click)="addLanguage()"></app-button>
+  </div>
+
+  <div *ngIf="options.length === 0" class="empty-hint">
+    ⚠ Please select at least one language.
+  </div>
+</div>

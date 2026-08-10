@@ -16,6 +16,8 @@ export class ResumeComponent {
   errorMessage = '';
   resumeId: number | null = null;
   extractedLanguages: string[] = [];
+  selectedLanguages: string[] = [];
+  isSubmitting = false;
 
   constructor(
     private resumeService: ResumeService,
@@ -88,11 +90,48 @@ export class ResumeComponent {
     });
   }
 
+  onLanguagesChanged(languages: string[]): void {
+    this.selectedLanguages = languages;
+  }
+
   onBack(): void {
     this.router.navigate(['/experience']);
   }
 
-  onNext(): void {
-    this.router.navigate(['/jobs'], { state: { extractedLanguages: this.extractedLanguages, resumeId: this.resumeId } });
+  onSubmit(): void {
+    if (this.selectedLanguages.length === 0) {
+      this.errorMessage = 'Please select at least one language.';
+      return;
+    }
+
+    const userId = this.applicationService.getCurrentUserId();
+    if (!userId || !this.resumeId) {
+      this.errorMessage = 'Something is missing. Please restart the application.';
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.errorMessage = '';
+
+    const request = {
+      userId,
+      resumeId: this.resumeId,
+      languages: this.selectedLanguages
+    };
+
+    this.applicationService.submitApplication(request).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.router.navigate(['/jobs']);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        if (err.status === 400) {
+          this.errorMessage = 'Please check your application details.';
+        } else {
+          this.errorMessage = 'Submission failed. Please try again.';
+        }
+      }
+    });
   }
 }

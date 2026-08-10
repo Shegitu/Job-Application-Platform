@@ -1,12 +1,11 @@
-namespace JobPlatform.Models;
+namespace JobPlatform.DTOs.Job;
 
-public class Job
+public class JobResponse
 {
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Company { get; set; } = string.Empty;
     public string Location { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string RequiredLanguages { get; set; } = string.Empty;
-    public ICollection<Application> Applications { get; set; } = new List<Application>();
+    public List<string> RequiredLanguages { get; set; } = new();
 }

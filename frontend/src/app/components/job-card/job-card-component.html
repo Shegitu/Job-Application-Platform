@@ -1,0 +1,14 @@
+<div class="job-card">
+  <div class="job-header">
+    <h3>{{ job.title }}</h3>
+    <span class="company">{{ job.company }}</span>
+  </div>
+
+  <div class="location">{{ job.location }}</div>
+
+  <p class="description">{{ job.description }}</p>
+
+  <div class="languages" *ngIf="job.requiredLanguages?.length">
+    <span class="language-tag" *ngFor="let lang of job.requiredLanguages">{{ lang }}</span>
+  </div>
+</div>

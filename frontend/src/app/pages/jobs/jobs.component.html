@@ -1,0 +1,15 @@
+<div class="jobs-container">
+  <h2>Recommended Jobs</h2>
+
+  <div *ngIf="isLoading" class="hint">Loading jobs...</div>
+
+  <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+  <div *ngIf="!isLoading && jobs.length === 0 && !errorMessage" class="empty-state">
+    No job offers available at this time.
+  </div>
+
+  <div class="job-list">
+    <app-job-card *ngFor="let job of jobs" [job]="job"></app-job-card>
+  </div>
+</div>

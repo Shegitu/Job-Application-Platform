@@ -1,0 +1,18 @@
+.jobs-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.job-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.empty-state {
+  color: var(--color-muted);
+  text-align: center;
+  padding: var(--spacing-lg);
+}

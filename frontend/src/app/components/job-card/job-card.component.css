@@ -1,0 +1,42 @@
+.job-card {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  background: var(--color-surface);
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.company {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.location {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.description {
+  margin-top: var(--spacing-sm);
+}
+
+.languages {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.language-tag {
+  background: var(--color-accent-bg);
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+}

@@ -1,3 +1,4 @@
+using JobPlatform.DTOs.Application;
 using JobPlatform.DTOs.Experience;
 using JobPlatform.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,25 @@ public class ApplicationController : ControllerBase
         {
             var experience = await _applicationService.SaveExperienceAsync(request);
             return Ok(experience);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("application/submit")]
+    public async Task<IActionResult> Submit([FromBody] ApplicationRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new { message = "Please check your application details." });
+        }
+
+        try
+        {
+            var result = await _applicationService.SubmitApplicationAsync(request);
+            return Ok(result);
         }
         catch (InvalidOperationException ex)
         {

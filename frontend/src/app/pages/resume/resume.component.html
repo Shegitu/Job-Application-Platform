@@ -10,17 +10,23 @@
     (uploadClicked)="onUpload()">
   </app-resume-upload>
 
+  <app-language-selector
+    *ngIf="status === 'completed'"
+    [extractedLanguages]="extractedLanguages"
+    (selectionChanged)="onLanguagesChanged($event)">
+  </app-language-selector>
+
   <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
 
-  <div *ngIf="status === 'completed'" class="languages-preview">
-    <p>Detected languages:</p>
-    <ul>
-      <li *ngFor="let lang of extractedLanguages">{{ lang }}</li>
-    </ul>
-  </div>
+  <div *ngIf="isSubmitting" class="hint">Submitting...</div>
 
   <div class="button-row">
     <app-button label="Back" type="button" (click)="onBack()"></app-button>
-    <app-button label="Next" type="button" [disabled]="status !== 'completed'" (click)="onNext()"></app-button>
+    <app-button
+      label="Submit Application"
+      type="button"
+      [disabled]="status !== 'completed' || isSubmitting"
+      (click)="onSubmit()">
+    </app-button>
   </div>
 </div>

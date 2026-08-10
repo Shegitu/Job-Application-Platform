@@ -1,3 +1,13 @@
+export interface ApplicationRequest {
+  userId: number;
+  resumeId: number;
+  languages: string[];
+}
+
+export interface ApplicationResponse {
+  id: number;
+  status: string;
+}
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
