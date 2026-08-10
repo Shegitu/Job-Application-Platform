@@ -9,4 +9,6 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Experience> Experiences => Set<Experience>();
+    public DbSet<Resume> Resumes => Set<Resume>();
+public DbSet<Language> Languages => Set<Language>();
 }

@@ -1,0 +1,22 @@
+.upload-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+}
+
+.file-name {
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.status-label {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.status-failed {
+  color: var(--color-error);
+}

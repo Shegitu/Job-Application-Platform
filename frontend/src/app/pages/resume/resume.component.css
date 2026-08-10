@@ -1,0 +1,26 @@
+.form-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.languages-preview {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: var(--color-surface);
+  border-radius: 6px;
+}
+
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-lg);
+}
+
+.error-banner {
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  padding: var(--spacing-sm);
+  border-radius: 6px;
+  margin-bottom: var(--spacing-md);
+}

@@ -1,0 +1,16 @@
+<div class="upload-box">
+  <input type="file" (change)="onFileChange($event)" accept=".pdf,.doc,.docx" />
+
+  <div *ngIf="selectedFile" class="file-name">{{ selectedFile.name }}</div>
+
+  <app-button
+    label="Upload"
+    type="button"
+    [disabled]="!selectedFile || status === 'uploading' || status === 'processing'"
+    (click)="onUploadClick()">
+  </app-button>
+
+  <div *ngIf="statusLabel" class="status-label" [class.status-failed]="status === 'failed'">
+    {{ statusLabel }}
+  </div>
+</div>
