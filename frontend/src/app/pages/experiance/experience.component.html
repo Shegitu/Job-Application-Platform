@@ -1,0 +1,33 @@
+<div class="form-container">
+  <app-step-header [currentStep]="2" [totalSteps]="4"></app-step-header>
+
+  <h2>Experience</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-form-input
+      label="Years of Experience"
+      formControlName="yearsOfExperience"
+      type="number"
+      [errorMessage]="form.get('yearsOfExperience')?.touched && form.get('yearsOfExperience')?.invalid ? 'Years of experience must be 0 or greater.' : ''">
+    </app-form-input>
+
+    <app-form-input
+      label="Role / Position"
+      formControlName="role"
+      [errorMessage]="form.get('role')?.touched && form.get('role')?.invalid ? 'Role is required.' : ''">
+    </app-form-input>
+
+    <app-form-input
+      label="Description"
+      formControlName="description"
+      [errorMessage]="form.get('description')?.touched && form.get('description')?.invalid ? 'Description is required.' : ''">
+    </app-form-input>
+
+    <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+    <div class="button-row">
+      <app-button label="Back" type="button" (click)="onBack()"></app-button>
+      <app-button label="Next" type="submit" [disabled]="isSubmitting"></app-button>
+    </div>
+  </form>
+</div>
