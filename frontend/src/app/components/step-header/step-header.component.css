@@ -1,0 +1,30 @@
+.step-header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.app-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-sm);
+}
+
+.progress {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.step-dot {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border);
+}
+
+.step-dot.completed {
+  background: var(--color-accent);
+}
+
+.step-dot.active {
+  background: var(--color-accent);
+}

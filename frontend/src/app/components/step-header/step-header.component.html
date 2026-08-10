@@ -1,0 +1,12 @@
+<div class="step-header">
+  <div class="app-title">Job Application</div>
+
+  <div class="progress">
+    <div
+      *ngFor="let step of steps"
+      class="step-dot"
+      [class.active]="step === currentStep"
+      [class.completed]="step < currentStep">
+    </div>
+  </div>
+</div>

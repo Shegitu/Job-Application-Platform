@@ -1,0 +1,12 @@
+<div class="form-field">
+  <label>{{ label }}</label>
+  <input
+    [type]="type"
+    [value]="value"
+    [disabled]="disabled"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    class="input"
+    [class.input-error]="errorMessage" />
+  <div *ngIf="errorMessage" class="field-error">⚠ {{ errorMessage }}</div>
+</div>
