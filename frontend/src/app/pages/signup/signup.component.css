@@ -1,0 +1,19 @@
+.form-container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: var(--spacing-sm);
+}
+
+.error-banner {
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  padding: var(--spacing-sm);
+  border-radius: 6px;
+  margin-bottom: var(--spacing-md);
+}

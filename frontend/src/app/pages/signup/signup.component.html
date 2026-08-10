@@ -1,0 +1,45 @@
+<div class="form-container">
+  <app-step-header [currentStep]="1" [totalSteps]="4"></app-step-header>
+
+  <h2>Sign Up</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-form-input
+      label="Email"
+      formControlName="email"
+      type="email"
+      (blur)="onEmailBlur()"
+      [errorMessage]="form.get('email')?.touched && form.get('email')?.invalid ? 'Please enter a valid email address.' : ''">
+    </app-form-input>
+
+    <div *ngIf="isExtracting" class="hint">Looking up your information...</div>
+
+    <app-form-input
+      label="Name"
+      formControlName="name"
+      [errorMessage]="form.get('name')?.touched && form.get('name')?.invalid ? 'Name is required.' : ''">
+    </app-form-input>
+
+    <app-form-input
+      label="Gender"
+      formControlName="gender"
+      [errorMessage]="form.get('gender')?.touched && form.get('gender')?.invalid ? 'Gender is required.' : ''">
+    </app-form-input>
+
+    <app-form-input
+      label="Phone"
+      formControlName="phone"
+      [errorMessage]="form.get('phone')?.touched && form.get('phone')?.invalid ? 'Phone is required.' : ''">
+    </app-form-input>
+
+    <app-form-input
+      label="Location"
+      formControlName="location"
+      [errorMessage]="form.get('location')?.touched && form.get('location')?.invalid ? 'Location is required.' : ''">
+    </app-form-input>
+
+    <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+    <app-button label="Next" type="submit" [disabled]="isSubmitting"></app-button>
+  </form>
+</div>
