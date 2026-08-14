@@ -1,0 +1,5 @@
+.job-detail-container { padding: 1rem; }
+.meta { color: #666; margin-bottom: .5rem }
+.description { margin: 1rem 0 }
+.tag { display:inline-block; background:#eee; padding:.2rem .4rem; margin-right:.3rem; border-radius:3px }
+.actions { margin-top:1rem }

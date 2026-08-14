@@ -1,14 +1,15 @@
 .form-container {
   max-width: 480px;
-  margin: 0 auto;
-  padding: var(--spacing-lg);
+  margin: 40px auto;
+  padding: var(--spacing-xl);
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
-
-.languages-preview {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-sm);
-  background: var(--color-surface);
-  border-radius: 6px;
+.hint {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-top: var(--spacing-sm);
 }
 
 .button-row {

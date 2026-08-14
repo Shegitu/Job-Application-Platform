@@ -19,4 +19,34 @@
 
 .status-failed {
   color: var(--color-error);
+}.upload-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition: border-color var(--transition-base), background var(--transition-base);
+}
+
+.upload-box:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.file-name {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.status-label {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  animation: fadeIn var(--transition-base);
+}
+
+.status-failed {
+  color: var(--color-error);
 }

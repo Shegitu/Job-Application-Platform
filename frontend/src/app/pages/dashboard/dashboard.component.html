@@ -1,0 +1,97 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h2>My Dashboard</h2>
+  </div>
+
+  <section class="panel" id="home">
+    <h3>Open Roles</h3>
+
+    <div *ngIf="jobs.length === 0" class="empty-state">No job offers available at this time.</div>
+
+    <div class="job-list">
+      <app-job-card
+        *ngFor="let job of jobs"
+        [job]="job"
+        [alreadyApplied]="hasApplied(job.id)"
+        [isLoggedIn]="isLoggedIn"
+        (apply)="onApply($event)">
+      </app-job-card>
+    </div>
+  </section>
+
+  <div *ngIf="isLoading" class="hint">Loading...</div>
+  <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+  <section class="panel" id="profile" *ngIf="profile">
+    <div class="panel-header">
+      <h3>Profile</h3>
+      <app-button [label]="isEditingProfile ? 'Cancel' : 'Edit Profile'" type="button" (clicked)="toggleEditProfile()"></app-button>
+    </div>
+
+    <div *ngIf="profileSuccessMessage" class="success-banner">{{ profileSuccessMessage }}</div>
+
+    <div *ngIf="!isEditingProfile" class="profile-view">
+      <p><strong>{{ profile.name }}</strong></p>
+      <p class="muted">{{ profile.email }}</p>
+      <p class="muted">{{ profile.phone }} · {{ profile.location }}</p>
+      <p class="muted" *ngIf="profile.role">{{ profile.role }} — {{ profile.yearsOfExperience }} years experience</p>
+      <p class="muted" *ngIf="profile.resumeFileName">Resume: {{ profile.resumeFileName }}</p>
+      <div class="tags" *ngIf="profile.languages.length">
+        <span class="tag" *ngFor="let lang of profile.languages">{{ lang }}</span>
+      </div>
+    </div>
+
+    <form *ngIf="isEditingProfile" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+      <app-form-input label="Name" formControlName="name"
+        [errorMessage]="profileForm.get('name')?.touched && profileForm.get('name')?.invalid ? 'Name is required.' : ''">
+      </app-form-input>
+      <app-form-input label="Phone" formControlName="phone"
+        [errorMessage]="profileForm.get('phone')?.touched && profileForm.get('phone')?.invalid ? 'Phone is required.' : ''">
+      </app-form-input>
+      <app-form-input label="Location" formControlName="location"
+        [errorMessage]="profileForm.get('location')?.touched && profileForm.get('location')?.invalid ? 'Location is required.' : ''">
+      </app-form-input>
+      <app-form-input label="Gender" formControlName="gender"
+        [errorMessage]="profileForm.get('gender')?.touched && profileForm.get('gender')?.invalid ? 'Gender is required.' : ''">
+      </app-form-input>
+
+      <app-button label="Save Changes" type="submit" [disabled]="isSavingProfile"></app-button>
+    </form>
+  </section>
+
+  <section class="panel" id="applied-jobs">
+    <h3>Applied Jobs</h3>
+
+    <div *ngIf="applications.length === 0" class="empty-state">
+      You haven't applied to any jobs yet. <a routerLink="/jobs">Browse open roles →</a>
+    </div>
+
+    <div class="application-list">
+      <div class="application-card" *ngFor="let app of applications">
+        <div class="application-info">
+          <strong>{{ app.jobTitle }}</strong>
+          <span class="muted">{{ app.company }}</span>
+          <span class="muted" *ngIf="app.coverLetter">"{{ app.coverLetter }}"</span>
+        </div>
+        <span class="status-badge" [ngClass]="statusClass(app.status)">{{ app.status }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="announcements">
+    <h3>Announcements</h3>
+    <div *ngIf="announcements.length === 0" class="empty-state">
+      No announcements yet. Check back later.
+    </div>
+
+    <div class="announcement-list">
+      <div class="announcement-card" *ngFor="let ann of announcements">
+        <div class="announcement-header">
+          <strong>{{ ann.title || 'Announcement' }}</strong>
+          <span class="muted">{{ ann.createdAt }}</span>
+        </div>
+        <p class="announcement-message">{{ ann.message }}</p>
+      </div>
+    </div>
+  </section>
+</div>

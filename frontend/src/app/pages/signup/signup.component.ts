@@ -1,10 +1,36 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { NgIf } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ApplicationService } from '../../services/application.service';
+import { FormInputComponent } from '../../components/form-input/form-input.component';
+import { ButtonComponent } from '../../components/button/button.component';
+import { StepHeaderComponent } from '../../components/step-header/step-header.component';
+
+function strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value as string;
+  if (!value) {
+    return null;
+  }
+  const hasUpper = /[A-Z]/.test(value);
+  const hasLower = /[a-z]/.test(value);
+  const hasSpecial = /[^A-Za-z0-9]/.test(value);
+  const hasMinLength = value.length >= 6;
+
+  return hasUpper && hasLower && hasSpecial && hasMinLength ? null : { weakPassword: true };
+}
+
+function passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
+  const password = group.get('password')?.value;
+  const confirmPassword = group.get('confirmPassword')?.value;
+  return password === confirmPassword ? null : { passwordsMismatch: true };
+}
 
 @Component({
   selector: 'app-signup',
+  standalone: true,
+  imports: [ReactiveFormsModule, NgIf, FormInputComponent, ButtonComponent, StepHeaderComponent, RouterLink],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
@@ -14,14 +40,21 @@ export class SignupComponent {
   isExtracting = false;
   errorMessage = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private applicationService: ApplicationService,
+    private router: Router
+  ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, strongPasswordValidator]],
+      confirmPassword: ['', Validators.required],
       name: ['', Validators.required],
       gender: ['', Validators.required],
       phone: ['', Validators.required],
       location: ['', Validators.required]
-    });
+    }, { validators: passwordsMatchValidator });
   }
 
   onEmailBlur(): void {
@@ -47,6 +80,24 @@ export class SignupComponent {
     });
   }
 
+  get passwordError(): string {
+    const control = this.form.get('password');
+    if (control?.touched && control?.hasError('weakPassword')) {
+      return 'Password must be at least 6 characters and include an uppercase letter, a lowercase letter, and a special character.';
+    }
+    if (control?.touched && control?.hasError('required')) {
+      return 'Password is required.';
+    }
+    return '';
+  }
+
+  get confirmPasswordError(): string {
+    if (this.form.get('confirmPassword')?.touched && this.form.hasError('passwordsMismatch')) {
+      return 'Passwords do not match.';
+    }
+    return '';
+  }
+
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -56,15 +107,18 @@ export class SignupComponent {
     this.isSubmitting = true;
     this.errorMessage = '';
 
-    this.authService.signup(this.form.value).subscribe({
-      next: () => {
+    const { confirmPassword, ...signupPayload } = this.form.value;
+
+    this.authService.signup(signupPayload).subscribe({
+      next: (result) => {
         this.isSubmitting = false;
+        this.applicationService.setSession(result.id, result.token, result.name);
         this.router.navigate(['/experience']);
       },
       error: (err) => {
         this.isSubmitting = false;
         if (err.status === 400) {
-          this.errorMessage = 'Please check your information and try again.';
+          this.errorMessage = err.error?.message || 'Please check your information and try again.';
         } else {
           this.errorMessage = 'Something went wrong. Please try again.';
         }

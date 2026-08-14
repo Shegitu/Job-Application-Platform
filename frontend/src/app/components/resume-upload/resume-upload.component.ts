@@ -1,7 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgIf, NgClass } from '@angular/common';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-resume-upload',
+  standalone: true,
+  imports: [NgIf, NgClass, ButtonComponent],
   templateUrl: './resume-upload.component.html',
   styleUrls: ['./resume-upload.component.css']
 })

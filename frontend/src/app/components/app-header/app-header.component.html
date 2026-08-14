@@ -1,0 +1,43 @@
+<nav class="app-nav">
+  <a routerLink="/" class="brand">
+    <span class="brand-mark">R</span>
+    <span class="brand-name">RRaras Technologies</span>
+  </a>
+
+  <div class="nav-links">
+    <!-- Public navigation: show on landing or when not logged in -->
+    <ng-container *ngIf="currentUrl === '/' || !isLoggedIn">
+      <a routerLink="/" class="nav-link">Home</a>
+      <a href="https://www.rarastechnologies.com" target="_blank" class="nav-link">About Us</a>
+      <a href="https://www.rarastechnologies.com" target="_blank" class="nav-link">Solutions</a>
+      <a href="https://www.rarastechnologies.com" target="_blank" class="nav-link">Why Us?</a>
+      <a href="https://www.rarastechnologies.com/#contact" target="_blank" class="nav-link">Contact Us</a>
+      <a routerLink="/jobs" class="nav-link">Jobs</a>
+      <a routerLink="/login" class="login-btn">Log In</a>
+    </ng-container>
+
+    <!-- Admin navigation -->
+    <ng-container *ngIf="isAdminLoggedIn">
+      <a routerLink="/admin/dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/admin/dashboard" fragment="post-job" class="nav-link">Post Job</a>
+      <a routerLink="/admin/dashboard" fragment="applicants" class="nav-link">Applicants</a>
+      <a routerLink="/admin/dashboard" fragment="bulk-decide" class="nav-link">Announcements</a>
+      <button type="button" class="logout-btn" (click)="onLogout()">Log Out</button>
+    </ng-container>
+
+    <!-- User navigation -->
+    <ng-container *ngIf="isLoggedIn && !isAdminLoggedIn">
+      <a routerLink="/dashboard" fragment="profile" class="nav-link">Profile</a>
+      <a routerLink="/jobs" class="nav-link">Jobs</a>
+      <a routerLink="/dashboard" fragment="applied-jobs" class="nav-link">Applied Jobs</a>
+      <a routerLink="/dashboard" fragment="announcements" class="nav-link">Announcements</a>
+
+      <button type="button" class="theme-toggle" (click)="toggleTheme()">
+        {{ isDark ? '☀ Light' : '🌙 Dark' }}
+      </button>
+
+      <span class="user-greeting">Hi, {{ userName }}</span>
+      <button type="button" class="logout-btn" (click)="onLogout()">Log Out</button>
+    </ng-container>
+  </div>
+</nav>

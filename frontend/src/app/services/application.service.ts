@@ -1,29 +1,51 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ExperienceRequest, Experience } from '../models/experience.model';
-import { ApplicationRequest, ApplicationResponse } from '../models/application.model';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationService {
   private baseUrl = 'https://localhost:5001/api';
-  private currentUserId: number | null = null;
+  private readonly userIdKey = 'jobplatform_userId';
+  private readonly tokenKey = 'jobplatform_userToken';
+  private readonly nameKey = 'jobplatform_userName';
 
   constructor(private http: HttpClient) {}
 
-  setCurrentUserId(id: number): void {
-    this.currentUserId = id;
+  setSession(userId: number, token: string, name: string): void {
+    sessionStorage.setItem(this.userIdKey, userId.toString());
+    sessionStorage.setItem(this.tokenKey, token);
+    sessionStorage.setItem(this.nameKey, name);
   }
 
   getCurrentUserId(): number | null {
-    return this.currentUserId;
+    const stored = sessionStorage.getItem(this.userIdKey);
+    return stored ? Number(stored) : null;
+  }
+
+  getToken(): string | null {
+    return sessionStorage.getItem(this.tokenKey);
+  }
+
+  getUserName(): string | null {
+    return sessionStorage.getItem(this.nameKey);
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  clearSession(): void {
+    sessionStorage.removeItem(this.userIdKey);
+    sessionStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem(this.nameKey);
+  }
+
+  private authHeaders(): HttpHeaders {
+    return new HttpHeaders({ 'X-User-Token': this.getToken() ?? '' });
   }
 
   saveExperience(request: ExperienceRequest): Observable<Experience> {
-    return this.http.post<Experience>(`${this.baseUrl}/experience`, request);
-  }
-
-  submitApplication(request: ApplicationRequest): Observable<ApplicationResponse> {
-    return this.http.post<ApplicationResponse>(`${this.baseUrl}/application/submit`, request);
+    return this.http.post<Experience>(`${this.baseUrl}/experience`, request, { headers: this.authHeaders() });
   }
 }

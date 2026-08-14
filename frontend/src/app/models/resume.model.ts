@@ -15,3 +15,7 @@ export interface ResumeUploadResponse {
 export interface ExtractedLanguagesResponse {
   extractedLanguages: string[];
 }
+
+export interface ConfirmLanguagesRequest {
+  languages: string[];
+}

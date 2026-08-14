@@ -1,0 +1,19 @@
+<div class="job-detail-container">
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div *ngIf="job">
+    <h2>{{ job.title }}</h2>
+    <div class="meta">{{ job.company }} · {{ job.location }}</div>
+    <p class="description">{{ job.description }}</p>
+
+    <div class="languages" *ngIf="job.requiredLanguages?.length">
+      <strong>Required Languages:</strong>
+      <span *ngFor="let l of job.requiredLanguages" class="tag">{{ l }}</span>
+    </div>
+
+    <div class="actions">
+      <button (click)="onApply()">Apply / View Application</button>
+    </div>
+  </div>
+</div>

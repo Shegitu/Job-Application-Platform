@@ -1,12 +1,19 @@
 import { Component } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { ResumeService } from '../../services/resume.service';
 import { ApplicationService } from '../../services/application.service';
+import { StepHeaderComponent } from '../../components/step-header/step-header.component';
+import { ResumeUploadComponent } from '../../components/resume-upload/resume-upload.component';
+import { LanguageSelectorComponent } from '../../components/language-selector/language-selector.component';
+import { ButtonComponent } from '../../components/button/button.component';
 
 type UploadStatus = 'idle' | 'uploading' | 'uploaded' | 'processing' | 'completed' | 'failed';
 
 @Component({
   selector: 'app-resume',
+  standalone: true,
+  imports: [NgIf, StepHeaderComponent, ResumeUploadComponent, LanguageSelectorComponent, ButtonComponent],
   templateUrl: './resume.component.html',
   styleUrls: ['./resume.component.css']
 })
@@ -17,13 +24,17 @@ export class ResumeComponent {
   resumeId: number | null = null;
   extractedLanguages: string[] = [];
   selectedLanguages: string[] = [];
-  isSubmitting = false;
+  isSaving = false;
 
   constructor(
     private resumeService: ResumeService,
     private applicationService: ApplicationService,
     private router: Router
-  ) {}
+  ) {
+    if (!this.applicationService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+    }
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -49,16 +60,10 @@ export class ResumeComponent {
       return;
     }
 
-    const userId = this.applicationService.getCurrentUserId();
-    if (!userId) {
-      this.errorMessage = 'Please complete sign up first.';
-      return;
-    }
-
     this.status = 'uploading';
     this.errorMessage = '';
 
-    this.resumeService.upload(userId, this.selectedFile).subscribe({
+    this.resumeService.upload(this.selectedFile).subscribe({
       next: (result) => {
         this.status = 'uploaded';
         this.resumeId = result.id;
@@ -98,38 +103,31 @@ export class ResumeComponent {
     this.router.navigate(['/experience']);
   }
 
-  onSubmit(): void {
+  onSaveProfile(): void {
     if (this.selectedLanguages.length === 0) {
       this.errorMessage = 'Please select at least one language.';
       return;
     }
 
-    const userId = this.applicationService.getCurrentUserId();
-    if (!userId || !this.resumeId) {
+    if (!this.resumeId) {
       this.errorMessage = 'Something is missing. Please restart the application.';
       return;
     }
 
-    this.isSubmitting = true;
+    this.isSaving = true;
     this.errorMessage = '';
 
-    const request = {
-      userId,
-      resumeId: this.resumeId,
-      languages: this.selectedLanguages
-    };
-
-    this.applicationService.submitApplication(request).subscribe({
+    this.resumeService.confirmLanguages(this.resumeId, { languages: this.selectedLanguages }).subscribe({
       next: () => {
-        this.isSubmitting = false;
+        this.isSaving = false;
         this.router.navigate(['/jobs']);
       },
       error: (err) => {
-        this.isSubmitting = false;
+        this.isSaving = false;
         if (err.status === 400) {
-          this.errorMessage = 'Please check your application details.';
+          this.errorMessage = 'Please check your language selection.';
         } else {
-          this.errorMessage = 'Submission failed. Please try again.';
+          this.errorMessage = 'Could not save your profile. Please try again.';
         }
       }
     });

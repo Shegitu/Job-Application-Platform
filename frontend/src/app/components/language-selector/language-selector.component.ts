@@ -1,4 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ButtonComponent } from '../button/button.component';
 
 interface LanguageOption {
   name: string;
@@ -7,6 +10,8 @@ interface LanguageOption {
 
 @Component({
   selector: 'app-language-selector',
+  standalone: true,
+  imports: [NgFor, NgIf, FormsModule, ButtonComponent],
   templateUrl: './language-selector.component.html',
   styleUrls: ['./language-selector.component.css']
 })

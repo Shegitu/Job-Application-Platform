@@ -1,7 +1,10 @@
 import { Component, Input } from '@angular/core';
+import { NgFor, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-step-header',
+  standalone: true,
+  imports: [NgFor, NgClass],
   templateUrl: './step-header.component.html',
   styleUrls: ['./step-header.component.css']
 })

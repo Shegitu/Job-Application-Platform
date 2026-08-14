@@ -7,7 +7,7 @@
     label="Upload"
     type="button"
     [disabled]="!selectedFile || status === 'uploading' || status === 'processing'"
-    (click)="onUploadClick()">
+    (clicked)="onUploadClick()">
   </app-button>
 
   <div *ngIf="statusLabel" class="status-label" [class.status-failed]="status === 'failed'">

@@ -1,0 +1,22 @@
+<div class="form-container">
+  <h2>Admin Login</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-form-input
+      label="Username"
+      formControlName="username"
+      [errorMessage]="form.get('username')?.touched && form.get('username')?.invalid ? 'Username is required.' : ''">
+    </app-form-input>
+
+    <app-form-input
+      label="Password"
+      formControlName="password"
+      type="password"
+      [errorMessage]="form.get('password')?.touched && form.get('password')?.invalid ? 'Password is required.' : ''">
+    </app-form-input>
+
+    <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+    <app-button label="Log In" type="submit" [disabled]="isSubmitting"></app-button>
+  </form>
+</div>

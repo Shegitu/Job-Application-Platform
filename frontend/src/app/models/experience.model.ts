@@ -7,7 +7,6 @@ export interface Experience {
 }
 
 export interface ExperienceRequest {
-  userId: number;
   yearsOfExperience: number;
   role: string;
   description: string;

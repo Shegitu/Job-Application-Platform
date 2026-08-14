@@ -1,7 +1,10 @@
 .form-container {
   max-width: 480px;
-  margin: 0 auto;
-  padding: var(--spacing-lg);
+  margin: 40px auto;
+  padding: var(--spacing-xl);
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .button-row {
@@ -17,3 +20,4 @@
   border-radius: 6px;
   margin-bottom: var(--spacing-md);
 }
+

@@ -18,15 +18,15 @@
 
   <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
 
-  <div *ngIf="isSubmitting" class="hint">Submitting...</div>
+  <div *ngIf="isSaving" class="hint">Saving profile...</div>
 
   <div class="button-row">
-    <app-button label="Back" type="button" (click)="onBack()"></app-button>
+    <app-button label="Back" type="button" (clicked)="onBack()"></app-button>
     <app-button
-      label="Submit Application"
+      label="Save Profile"
       type="button"
-      [disabled]="status !== 'completed' || isSubmitting"
-      (click)="onSubmit()">
+      [disabled]="status !== 'completed' || isSaving"
+      (clicked)="onSaveProfile()">
     </app-button>
   </div>
 </div>

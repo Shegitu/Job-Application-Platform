@@ -1,0 +1,195 @@
+<div class="admin-container">
+  <nav class="admin-nav">
+    <div class="brand">
+      <span class="brand-mark">R</span>
+      <span class="brand-name">Raras Admin</span>
+    </div>
+    <div class="admin-nav-links">
+      <button type="button" class="nav-link-btn" (click)="scrollTo('post-job')">Post Job</button>
+      <button type="button" class="nav-link-btn" (click)="scrollTo('applicants')">Applicants</button>
+      <button type="button" class="nav-link-btn" (click)="scrollTo('bulk-decide')">Announcements</button>
+      <app-button label="Log Out" type="button" (clicked)="onLogout()"></app-button>
+    </div>
+  </nav>
+
+  <section class="panel" id="post-job">
+    <h3>Post a New Job</h3>
+    <form [formGroup]="jobForm" (ngSubmit)="onPostJob()">
+      <app-form-input label="Title" formControlName="title"
+        [errorMessage]="jobForm.get('title')?.touched && jobForm.get('title')?.invalid ? 'Title is required.' : ''">
+      </app-form-input>
+      <app-form-input label="Company" formControlName="company"
+        [errorMessage]="jobForm.get('company')?.touched && jobForm.get('company')?.invalid ? 'Company is required.' : ''">
+      </app-form-input>
+      <app-form-input label="Location" formControlName="location"
+        [errorMessage]="jobForm.get('location')?.touched && jobForm.get('location')?.invalid ? 'Location is required.' : ''">
+      </app-form-input>
+      <app-form-input label="Description" formControlName="description"
+        [errorMessage]="jobForm.get('description')?.touched && jobForm.get('description')?.invalid ? 'Description is required.' : ''">
+      </app-form-input>
+      <app-form-input label="Required Languages (comma separated)" formControlName="requiredLanguages">
+      </app-form-input>
+      <app-form-input label="Application Deadline" formControlName="deadline" type="date"
+        [errorMessage]="jobForm.get('deadline')?.touched && jobForm.get('deadline')?.invalid ? 'Deadline is required.' : ''">
+      </app-form-input>
+
+      <div *ngIf="jobSuccessMessage" class="success-banner">{{ jobSuccessMessage }}</div>
+
+      <app-button label="Post Job" type="submit" [disabled]="isPostingJob"></app-button>
+    </form>
+  </section>
+
+  <section class="panel" id="applicants">
+    <h3>Applicants</h3>
+
+    <div *ngIf="isLoading" class="hint">Loading users...</div>
+    <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+    <div *ngIf="decideSuccessMessage" class="success-banner">{{ decideSuccessMessage }}</div>
+
+    <div class="multi-select-toolbar" *ngIf="!isLoading">
+      <label>Decision</label>
+      <select [(ngModel)]="multiDecision" class="select-input">
+        <option value="Accepted">Accept</option>
+        <option value="Rejected">Reject</option>
+      </select>
+
+      <label>Message</label>
+      <textarea [(ngModel)]="multiMessage" rows="2" placeholder="Message to selected applicants"></textarea>
+
+      <label class="checkbox-label"><input type="checkbox" [(ngModel)]="includeAnnouncementForSelected" /> Create system announcement</label>
+      <label class="checkbox-label"><input type="checkbox" [(ngModel)]="sendEmailForAnnouncement" /> Also send email</label>
+
+      <app-button label="Send to Selected" type="button" (clicked)="sendDecisionToSelected()" [disabled]="isSendingSelected"></app-button>
+      <div *ngIf="selectedSuccessMessage" class="success-banner">{{ selectedSuccessMessage }}</div>
+    </div>
+
+    <div class="filter-panel">
+      <h4>Filter Applicants</h4>
+      <div class="filters-row">
+        <input placeholder="Location" [(ngModel)]="filterLocation" />
+        <input placeholder="Role" [(ngModel)]="filterRole" />
+        <input placeholder="Language" [(ngModel)]="filterLanguage" />
+        <input type="number" placeholder="Min years" [(ngModel)]="filterMinYears" />
+        <select [(ngModel)]="filterJobId">
+          <option [ngValue]="null">Any Job</option>
+          <option *ngFor="let job of allJobs" [ngValue]="job.id">{{ job.title }}</option>
+        </select>
+      </div>
+      <div class="filters-actions">
+        <app-button label="Select Matching" type="button" (clicked)="selectMatchingApplicants()"></app-button>
+        <app-button label="Clear Selection" type="button" (clicked)="clearSelectedApplicants()"></app-button>
+        <div class="muted">Tip: use filters then 'Select Matching' to choose applicants by profile.</div>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && users.length === 0" class="empty-state">
+      No one has applied to any jobs yet.
+    </div>
+
+    <div class="user-list">
+      <div class="user-card" *ngFor="let user of users">
+        <div class="user-info">
+          <strong>{{ user.name }}</strong>
+          <span class="muted">{{ user.email }}</span>
+          <span class="muted">{{ user.phone }} · {{ user.location }}</span>
+          <span *ngIf="user.role" class="muted">{{ user.role }} — {{ user.yearsOfExperience }} yrs</span>
+          <span *ngIf="user.resumeFileName" class="muted resume-line">
+            Resume: {{ user.resumeFileName }}
+            <button type="button" class="download-link" (click)="downloadResume(user)">Download</button>
+          </span>
+          <div class="tags" *ngIf="user.languages.length">
+            <span class="tag" *ngFor="let lang of user.languages">{{ lang }}</span>
+          </div>
+        </div>
+
+          <div class="application-list" *ngIf="user.applications.length">
+          <div class="application-row" *ngFor="let app of user.applications">
+            <div class="application-select" *ngIf="app.status === 'Pending'">
+              <input type="checkbox" (change)="toggleSelectApplication(app.applicationId, $event.target.checked)" />
+            </div>
+            <div class="application-info">
+              <strong>{{ app.jobTitle }}</strong>
+              <span class="muted" *ngIf="app.coverLetter">"{{ app.coverLetter }}"</span>
+              <span class="status-badge" [ngClass]="statusClass(app.status)">{{ app.status }}</span>
+            </div>
+
+            <div class="decision-buttons" *ngIf="app.status === 'Pending'">
+              <app-button label="Decide" type="button" (clicked)="openDecision(user.userId, app)"></app-button>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-applications" *ngIf="!user.applications.length">
+          No applications yet.
+        </div>
+
+        <div class="decide-panel" *ngIf="activeApplication?.userId === user.userId && activeApplication">
+          <form [formGroup]="decideForm">
+            <app-form-input label="Message to Applicant" formControlName="message"
+              [errorMessage]="decideForm.get('message')?.touched && decideForm.get('message')?.invalid ? 'Message is required.' : ''">
+            </app-form-input>
+
+            <div class="decision-action-row">
+              <app-button label="Cancel" type="button" (clicked)="closeDecision()"></app-button>
+              <app-button label="Reject" type="button" [disabled]="isDeciding" (clicked)="onDecide('Rejected')"></app-button>
+              <app-button label="Accept" type="button" [disabled]="isDeciding" (clicked)="onDecide('Accepted')"></app-button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="bulk-decide">
+    <h3>Announcements — Bulk Accept / Reject</h3>
+    <p class="muted">Use the multi-select in Applicants to choose specific applicants, write a message, and notify them individually by email.</p>
+
+    <form [formGroup]="bulkForm" (ngSubmit)="onSendBulkDecision()">
+      <div class="form-field">
+        <label>Job (optional — leave blank for all pending applicants)</label>
+        <select formControlName="jobId" class="select-input">
+          <option value="">All Jobs</option>
+          <option *ngFor="let job of allJobs" [value]="job.id">{{ job.title }}</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label>Decision</label>
+        <select formControlName="decision" class="select-input">
+          <option value="Accepted">Accepted</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+
+      <app-form-input label="Message to Applicants" formControlName="message"
+        [errorMessage]="bulkForm.get('message')?.touched && bulkForm.get('message')?.invalid ? 'Message is required.' : ''">
+      </app-form-input>
+
+      <div *ngIf="bulkSuccessMessage" class="success-banner">{{ bulkSuccessMessage }}</div>
+
+      <app-button label="Send Announcement" type="submit" [disabled]="isSendingBulk"></app-button>
+    </form>
+  </section>
+
+    <section class="panel" id="announcements-admin">
+      <h3>Create Announcement</h3>
+      <p class="muted">Write an announcement for all users. Optionally send an email notification.</p>
+
+      <form [formGroup]="announcementForm" (ngSubmit)="onPostAnnouncement()">
+        <app-form-input label="Title (optional)" formControlName="title"></app-form-input>
+        <app-form-input label="Message" formControlName="message"
+          [errorMessage]="announcementForm.get('message')?.touched && announcementForm.get('message')?.invalid ? 'Message is required.' : ''">
+        </app-form-input>
+
+        <div class="form-field">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="sendEmail" /> Send as email to all users
+          </label>
+        </div>
+
+        <div *ngIf="announcementSuccessMessage" class="success-banner">{{ announcementSuccessMessage }}</div>
+
+        <app-button label="Post Announcement" type="submit" [disabled]="isPostingAnnouncement"></app-button>
+      </form>
+    </section>
+</div>

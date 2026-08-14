@@ -1,15 +1,25 @@
 <div class="jobs-container">
-  <h2>Recommended Jobs</h2>
+  <div class="jobs-header">
+    <h2>Open Roles</h2>
+    <a routerLink="/dashboard" class="dashboard-link" *ngIf="isLoggedIn">My Applications</a>
+  </div>
 
   <div *ngIf="isLoading" class="hint">Loading jobs...</div>
 
   <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success-banner">{{ successMessage }}</div>
 
   <div *ngIf="!isLoading && jobs.length === 0 && !errorMessage" class="empty-state">
     No job offers available at this time.
   </div>
 
   <div class="job-list">
-    <app-job-card *ngFor="let job of jobs" [job]="job"></app-job-card>
+    <app-job-card
+      *ngFor="let job of jobs"
+      [job]="job"
+      [alreadyApplied]="hasApplied(job.id)"
+      [isLoggedIn]="isLoggedIn"
+      (apply)="onApply($event)">
+    </app-job-card>
   </div>
 </div>

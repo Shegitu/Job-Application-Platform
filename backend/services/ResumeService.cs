@@ -13,20 +13,50 @@ public class ResumeService
     private static readonly string[] AllowedExtensions = { ".pdf", ".doc", ".docx" };
     private const long MaxFileSizeBytes = 5 * 1024 * 1024;
 
+    private static readonly Dictionary<string, string[]> KnownLanguages = new()
+{
+    { "English", new[] { "english" } },
+    { "Amharic", new[] { "amharic" } },
+    { "Afaan Oromo", new[] { "afaan oromo", "oromic","oromo", "oromiffa" } },
+    { "Tigrinya", new[] { "tigrinya", "tigrigna" } },
+    {"Guragenya", new[] {"guragenya"}},
+    { "Somali", new[] { "somali" } },
+    { "French", new[] { "french", "français" } },
+    { "Arabic", new[] { "arabic" } },
+    { "Spanish", new[] { "spanish", "español" } },
+    { "German", new[] { "german", "deutsch" } },
+    { "Italian", new[] { "italian" } },
+    { "Portuguese", new[] { "portuguese" } },
+    { "Chinese", new[] { "chinese", "mandarin", "cantonese" } },
+    { "Japanese", new[] { "japanese" } },
+    { "Korean", new[] { "korean" } },
+    { "Hindi", new[] { "hindi" } },
+    { "Russian", new[] { "russian" } },
+    { "Turkish", new[] { "turkish" } },
+    { "Swahili", new[] { "swahili", "kiswahili" } },
+    { "Dutch", new[] { "dutch" } },
+    { "Greek", new[] { "greek" } },
+    { "Hebrew", new[] { "hebrew" } },
+    { "Polish", new[] { "polish" } },
+    { "Vietnamese", new[] { "vietnamese" } },
+    { "Thai", new[] { "thai" } },
+    { "Persian", new[] { "persian", "farsi" } },
+    { "Urdu", new[] { "urdu" } }
+};
+
     public ResumeService(ApplicationDbContext context, IWebHostEnvironment environment)
     {
         _context = context;
         _environment = environment;
     }
 
+    public async Task<Models.Resume?> GetResumeByUserIdAsync(int userId)
+    {
+        return await _context.Resumes.FirstOrDefaultAsync(r => r.UserId == userId);
+    }
+
     public async Task<ResumeUploadResponse> UploadAsync(int userId, IFormFile file)
     {
-        var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
-        if (!userExists)
-        {
-            throw new InvalidOperationException("User not found.");
-        }
-
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (!AllowedExtensions.Contains(extension))
         {
@@ -86,7 +116,7 @@ public class ResumeService
             throw new KeyNotFoundException("Resume not found.");
         }
 
-        var detected = new List<string> { "English", "Amharic", "Afaan Oromo" };
+        var detected = DetectLanguagesFromFile(resume.FilePath);
 
         var existingLanguages = _context.Languages.Where(l => l.ResumeId == resumeId);
         _context.Languages.RemoveRange(existingLanguages);
@@ -101,4 +131,60 @@ public class ResumeService
 
         return new ExtractedLanguagesResponse { ExtractedLanguages = detected };
     }
+
+    public async Task ConfirmLanguagesAsync(int resumeId, List<string> selectedLanguages)
+    {
+        var resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == resumeId);
+        if (resume == null)
+        {
+            throw new KeyNotFoundException("Resume not found.");
+        }
+
+        var existingLanguages = _context.Languages.Where(l => l.ResumeId == resumeId);
+        _context.Languages.RemoveRange(existingLanguages);
+
+        foreach (var lang in selectedLanguages)
+        {
+            _context.Languages.Add(new Language { ResumeId = resumeId, Name = lang });
+        }
+
+        resume.Status = "Completed";
+        await _context.SaveChangesAsync();
+    }
+
+    private List<string> DetectLanguagesFromFile(string filePath)
+    {
+        if (!File.Exists(filePath))
+        {
+            return new List<string> { "English" };
+        }
+
+        string text;
+        try
+        {
+            text = ResumeTextExtractor.ExtractText(filePath).ToLowerInvariant();
+        }
+        catch
+        {
+            return new List<string> { "English" };
+        }
+
+        var found = new List<string>();
+
+        foreach (var (languageName, keywords) in KnownLanguages)
+        {
+            if (keywords.Any(keyword => text.Contains(keyword)))
+            {
+                found.Add(languageName);
+            }
+        }
+
+        if (found.Count == 0)
+        {
+            found.Add("English");
+        }
+
+        return found;
+    }
 }
+

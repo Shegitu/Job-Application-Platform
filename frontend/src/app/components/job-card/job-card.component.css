@@ -1,42 +1,109 @@
+.apply-section {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
 .job-card {
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
   padding: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .job-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: var(--spacing-sm);
+}
+
+.job-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
 }
 
 .company {
+  font-size: 0.95rem;
   color: var(--color-muted);
-  font-size: 0.9rem;
 }
 
 .location {
   color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.meta-line {
+  color: var(--color-muted);
   font-size: 0.85rem;
-  margin-top: 2px;
-}
-
-.description {
-  margin-top: var(--spacing-sm);
-}
-
-.languages {
-  display: flex;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-sm);
-  flex-wrap: wrap;
 }
 
 .language-tag {
-  background: var(--color-accent-bg);
-  color: var(--color-accent);
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  border-radius: 12px;
+  display: inline-block;
+  margin-right: 6px;
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.applied-badge {
+  color: var(--color-success);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.login-hint {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.apply-form {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  animation: fadeIn var(--transition-base);
+}
+
+.apply-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.apply-form textarea {
+  padding: 10px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  transition: border-color var(--transition-fast);
+}
+
+.apply-form textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.apply-section .applied-badge {
+  background: rgba(22,163,74,0.08);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.apply-section app-button button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 8px 14px;
 }

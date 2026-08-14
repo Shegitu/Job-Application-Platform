@@ -11,3 +11,8 @@ public class ExtractedLanguagesResponse
 {
     public List<string> ExtractedLanguages { get; set; } = new();
 }
+
+public class ConfirmLanguagesRequest
+{
+    public List<string> Languages { get; set; } = new();
+}

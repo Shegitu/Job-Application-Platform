@@ -17,16 +17,15 @@
       [errorMessage]="form.get('role')?.touched && form.get('role')?.invalid ? 'Role is required.' : ''">
     </app-form-input>
 
-    <app-form-input
-      label="Description"
-      formControlName="description"
-      [errorMessage]="form.get('description')?.touched && form.get('description')?.invalid ? 'Description is required.' : ''">
-    </app-form-input>
+    <<app-form-input
+  label="Description (optional)"
+  formControlName="description">
+</app-form-input>
 
     <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
 
     <div class="button-row">
-      <app-button label="Back" type="button" (click)="onBack()"></app-button>
+      <app-button label="Back" type="button" (clicked)="onBack()"></app-button>
       <app-button label="Next" type="submit" [disabled]="isSubmitting"></app-button>
     </div>
   </form>

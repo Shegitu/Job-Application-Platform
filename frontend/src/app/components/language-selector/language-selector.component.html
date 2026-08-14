@@ -15,7 +15,7 @@
       placeholder="Add a language"
       [(ngModel)]="newLanguage"
       (keyup.enter)="addLanguage()" />
-    <app-button label="Add" type="button" (click)="addLanguage()"></app-button>
+    <app-button label="Add" type="button" (clicked)="addLanguage()"></app-button>
   </div>
 
   <div *ngIf="options.length === 0" class="empty-hint">

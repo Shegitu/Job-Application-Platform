@@ -1,8 +1,11 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-form-input',
+  standalone: true,
+  imports: [NgIf],
   templateUrl: './form-input.component.html',
   styleUrls: ['./form-input.component.css'],
   providers: [
